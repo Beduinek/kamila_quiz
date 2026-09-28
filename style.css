@@ -364,9 +364,11 @@ h3 {
 }
 
 #wrong-count {
-  font-size: 18px;
-  color: #7c5967;
+  font-size: 22px;
+  font-weight: 700;
+  color: #c84c7a;
   margin-bottom: 16px;
+  text-align: center;
 }
 
 
