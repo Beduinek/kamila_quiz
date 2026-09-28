@@ -747,7 +747,7 @@ function showFinalScreen() {
 
   if (percent >= 0.9) {
     message =
-      "No i pięknie księżniczko! Kocham Cię 😏❤️";
+      "No i pięknie księżniczko! Kocham Cię ❤️";
   } else if (
     percent >= 0.75
   ) {
