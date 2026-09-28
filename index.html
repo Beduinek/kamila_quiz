@@ -19,18 +19,56 @@
         English Quiz ❤️
       </h1>
 
-      <div id="quiz-screen">
+      <!-- EKRAN STARTOWY -->
+      <div id="start-screen" class="center">
+
+        <h2>Wybierz tryb</h2>
+
+        <div class="mode-buttons">
+          <button class="mode-btn" data-mode="en-pl">
+            EN → PL
+          </button>
+
+          <button class="mode-btn" data-mode="pl-en">
+            PL → EN
+          </button>
+
+          <button class="mode-btn" data-mode="mixed">
+            Mieszany 🔀
+          </button>
+        </div>
+
+        <p class="small-info">
+          200 słówek • 4 segmenty po 50
+        </p>
+
+      </div>
+
+
+      <!-- QUIZ -->
+      <div id="quiz-screen" class="hidden">
+
+        <div class="top-stats">
+
+          <div>
+            <span class="stat-label">Postęp</span>
+            <strong id="overall-progress-text">
+              0 / 200
+            </strong>
+          </div>
+
+          <div>
+            <span class="stat-label">Seria</span>
+            <strong id="streak">
+              🔥 0
+            </strong>
+          </div>
+
+        </div>
 
         <div class="progress-wrap">
 
-          <div class="progress-info">
-            <span>Całość</span>
-            <span id="overall-progress-text">
-              0 / 0
-            </span>
-          </div>
-
-          <div class="progress-bar">
+          <div class="progress-bar big-progress">
             <div
               id="overall-progress"
               class="progress"
@@ -47,9 +85,7 @@
               Segment 1
             </span>
 
-            <span
-              id="segment-progress-text"
-            >
+            <span id="segment-progress-text">
               0 / 50
             </span>
           </div>
@@ -57,21 +93,9 @@
           <div class="progress-bar">
             <div
               id="segment-progress"
-              class="progress"
+              class="progress segment-progress-color"
             ></div>
           </div>
-
-        </div>
-
-
-        <div class="center">
-
-          <p>
-            Seria:
-            <strong id="streak">
-              🔥 0
-            </strong>
-          </p>
 
         </div>
 
@@ -92,7 +116,7 @@
       </div>
 
 
-
+      <!-- PRZERWA -->
       <div
         id="break-screen"
         class="hidden center"
@@ -104,7 +128,7 @@
 
         <p
           id="break-message"
-          style="font-size: 20px;"
+          class="break-message"
         >
           Super Ci idzie ❤️
         </p>
@@ -126,7 +150,7 @@
       </div>
 
 
-
+      <!-- KONIEC -->
       <div
         id="final-screen"
         class="hidden center"
@@ -136,34 +160,44 @@
           Koniec 🎉
         </h2>
 
-        <p
-          style="
-            font-size: 18px;
-            margin-bottom: 5px;
-          "
-        >
+        <p class="small-info">
           Twój wynik:
         </p>
 
-        <div
-          id="final-score"
-          style="
-            font-size: 42px;
-            font-weight: bold;
-          "
-        >
-          0 / 0
+        <div id="final-score" class="final-score">
+          0 / 200
         </div>
 
         <p
           id="final-message"
-          style="
-            font-size: 20px;
-            margin-top: 20px;
-          "
+          class="final-message"
         >
           Jestem z Ciebie dumny ❤️
         </p>
+
+        <div id="wrong-summary" class="wrong-summary hidden">
+
+          <h3>
+            Słówka do powtórki
+          </h3>
+
+          <p id="wrong-count"></p>
+
+          <button
+            id="repeat-wrong-btn"
+            class="main-btn"
+          >
+            Powtórz błędne 🔁
+          </button>
+
+        </div>
+
+        <button
+          id="restart-btn"
+          class="secondary-btn"
+        >
+          Zacznij od nowa
+        </button>
 
       </div>
 
@@ -172,8 +206,8 @@
   </div>
 
 
-  <script src="words.js?v=3"></script>
-<script src="app.js?v=3"></script>
+  <script src="words.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 
 </body>
 </html>
