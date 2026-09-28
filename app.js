@@ -12,6 +12,8 @@ let selectedMode = "mixed";
 let repeatMode = false;
 let currentCorrectAnswers = [];
 
+let segmentStartScore = 0;
+
 function shuffle(array) {
   const copy = [...array];
 
@@ -46,7 +48,9 @@ function getDirection() {
     return "pl-en";
   }
 
-  return Math.random() < 0.5 ? "en-pl" : "pl-en";
+  return Math.random() < 0.5
+    ? "en-pl"
+    : "pl-en";
 }
 
 function startQuiz(mode) {
@@ -60,11 +64,23 @@ function startQuiz(mode) {
   streak = 0;
   wrongWords = [];
   answered = false;
+  segmentStartScore = 0;
 
-  document.getElementById("start-screen").classList.add("hidden");
-  document.getElementById("final-screen").classList.add("hidden");
-  document.getElementById("break-screen").classList.add("hidden");
-  document.getElementById("quiz-screen").classList.remove("hidden");
+  document
+    .getElementById("start-screen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("final-screen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("break-screen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("quiz-screen")
+    .classList.remove("hidden");
 
   showQuestion();
 }
@@ -88,7 +104,9 @@ function showQuestion() {
   currentCorrectAnswers =
     getCorrectAnswers(word, direction);
 
-  document.getElementById("question").textContent = question;
+  document.getElementById(
+    "question"
+  ).textContent = question;
 
   const answersContainer =
     document.getElementById("answers");
@@ -112,15 +130,15 @@ function showQuestion() {
   const correctOption =
     currentCorrectAnswers[
       Math.floor(
-        Math.random() * currentCorrectAnswers.length
+        Math.random() *
+        currentCorrectAnswers.length
       )
     ];
 
-  const options =
-    shuffle([
-      correctOption,
-      ...wrongOptions
-    ]);
+  const options = shuffle([
+    correctOption,
+    ...wrongOptions
+  ]);
 
   options.forEach(option => {
     const button =
@@ -130,7 +148,11 @@ function showQuestion() {
     button.textContent = option;
 
     button.addEventListener("click", () => {
-      checkAnswer(button, option, word);
+      checkAnswer(
+        button,
+        option,
+        word
+      );
     });
 
     answersContainer.appendChild(button);
@@ -139,10 +161,12 @@ function showQuestion() {
   updateProgress();
 }
 
-function checkAnswer(button, selectedAnswer, word) {
-  if (answered) {
-    return;
-  }
+function checkAnswer(
+  button,
+  selectedAnswer,
+  word
+) {
+  if (answered) return;
 
   answered = true;
 
@@ -205,7 +229,8 @@ function updateProgress() {
 
   const completed =
     Math.min(
-      currentIndex + (answered ? 1 : 0),
+      currentIndex +
+      (answered ? 1 : 0),
       total
     );
 
@@ -217,7 +242,9 @@ function updateProgress() {
   document.getElementById(
     "overall-progress"
   ).style.width =
-    `${total ? (completed / total) * 100 : 0}%`;
+    `${total
+      ? (completed / total) * 100
+      : 0}%`;
 
   document.getElementById(
     "streak"
@@ -238,17 +265,22 @@ function updateProgress() {
     document.getElementById(
       "segment-progress"
     ).style.width =
-      `${total ? (completed / total) * 100 : 0}%`;
+      `${total
+        ? (completed / total) * 100
+        : 0}%`;
 
     return;
   }
 
   const segmentNumber =
-    Math.floor(currentIndex / SEGMENT_SIZE) + 1;
+    Math.floor(
+      currentIndex / SEGMENT_SIZE
+    ) + 1;
 
   const segmentStart =
-    Math.floor(currentIndex / SEGMENT_SIZE) *
-    SEGMENT_SIZE;
+    Math.floor(
+      currentIndex / SEGMENT_SIZE
+    ) * SEGMENT_SIZE;
 
   const segmentLength =
     Math.min(
@@ -306,10 +338,22 @@ function showBreak() {
     messages[segment - 1] ||
     "Odpocznij chwilę ❤️";
 
+  const segmentScore =
+    score - segmentStartScore;
+
+  document.getElementById(
+    "segment-score"
+  ).textContent =
+    `Wynik segmentu: ${segmentScore} / 50`;
+
+  segmentStartScore = score;
+
   let seconds = BREAK_TIME;
 
   const timerElement =
-    document.getElementById("break-timer");
+    document.getElementById(
+      "break-timer"
+    );
 
   timerElement.textContent =
     formatTime(seconds);
@@ -357,7 +401,9 @@ function formatTime(seconds) {
   return (
     String(minutes).padStart(2, "0") +
     ":" +
-    String(remainingSeconds).padStart(2, "0")
+    String(
+      remainingSeconds
+    ).padStart(2, "0")
   );
 }
 
@@ -388,13 +434,13 @@ function showFinalScreen() {
 
   if (percent >= 0.9) {
     message =
-      "No i pięknie księżniczko! 😏❤️";
+      "No i kto mówił, że nie umie angielskiego? 😏❤️";
   } else if (percent >= 0.75) {
     message =
-      "Bardzo dobrze, jestem z Ciebie dumny! ❤️";
+      "Bardzo dobrze ❤️ Jeszcze trochę i będzie petarda.";
   } else {
     message =
-      "Powtórzymy błędne i będzie git ❤️";
+      "Spokojnie, po to jest ten quiz ❤️ Powtórzymy błędne i będzie git.";
   }
 
   document.getElementById(
@@ -402,17 +448,23 @@ function showFinalScreen() {
   ).textContent = message;
 
   const wrongSummary =
-    document.getElementById("wrong-summary");
+    document.getElementById(
+      "wrong-summary"
+    );
 
   if (wrongWords.length > 0) {
-    wrongSummary.classList.remove("hidden");
+    wrongSummary.classList.remove(
+      "hidden"
+    );
 
     document.getElementById(
       "wrong-count"
     ).textContent =
       `Do powtórki: ${wrongWords.length}`;
   } else {
-    wrongSummary.classList.add("hidden");
+    wrongSummary.classList.add(
+      "hidden"
+    );
   }
 }
 
@@ -464,11 +516,9 @@ function returnToStart() {
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-
     document
       .querySelectorAll(".mode-btn")
       .forEach(button => {
-
         button.addEventListener(
           "click",
           () => {
@@ -477,22 +527,24 @@ document.addEventListener(
             );
           }
         );
-
       });
 
     document
-      .getElementById("repeat-wrong-btn")
+      .getElementById(
+        "repeat-wrong-btn"
+      )
       .addEventListener(
         "click",
         repeatWrongWords
       );
 
     document
-      .getElementById("restart-btn")
+      .getElementById(
+        "restart-btn"
+      )
       .addEventListener(
         "click",
         returnToStart
       );
-
   }
 );
