@@ -434,13 +434,13 @@ function showFinalScreen() {
 
   if (percent >= 0.9) {
     message =
-      "No i kto mówił, że nie umie angielskiego? 😏❤️";
+      "No i pięknie księżniczko! Kocham Cię 😏❤️";
   } else if (percent >= 0.75) {
     message =
-      "Bardzo dobrze ❤️ Jeszcze trochę i będzie petarda.";
+      "Bardzo dobrze, lecisz jak burza. Kocham Cię ❤️ ";
   } else {
     message =
-      "Spokojnie, po to jest ten quiz ❤️ Powtórzymy błędne i będzie git.";
+      "Spokojnie, powtórzymy błędne i będzie super. Kocham Cię ❤️";
   }
 
   document.getElementById(
