@@ -1,5 +1,6 @@
 const SEGMENT_SIZE = 50;
 const BREAK_TIME = 120;
+const STORAGE_KEY = "kamilaQuizState";
 
 let quizWords = [];
 let currentIndex = 0;
@@ -11,8 +12,13 @@ let answered = false;
 let selectedMode = "mixed";
 let repeatMode = false;
 let currentCorrectAnswers = [];
-
 let segmentStartScore = 0;
+let activeBreakTimer = null;
+
+
+// --------------------
+// POMOCNICZE
+// --------------------
 
 function shuffle(array) {
   const copy = [...array];
@@ -35,7 +41,9 @@ function getCorrectAnswers(word, direction) {
   }
 
   return words
-    .filter(item => normalize(item.pl) === normalize(word.pl))
+    .filter(item =>
+      normalize(item.pl) === normalize(word.pl)
+    )
     .map(item => item.en);
 }
 
@@ -53,7 +61,76 @@ function getDirection() {
     : "pl-en";
 }
 
+
+// --------------------
+// ZAPIS SESJI
+// --------------------
+
+function saveSession() {
+  if (quizWords.length === 0) {
+    return;
+  }
+
+  const state = {
+    quizWords,
+    currentIndex,
+    score,
+    streak,
+    wrongWords,
+    selectedMode,
+    repeatMode,
+    segmentStartScore,
+    savedAt: Date.now()
+  };
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(state)
+  );
+}
+
+function loadSavedSession() {
+  const raw =
+    localStorage.getItem(STORAGE_KEY);
+
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const state = JSON.parse(raw);
+
+    if (
+      !state ||
+      !Array.isArray(state.quizWords) ||
+      state.quizWords.length === 0
+    ) {
+      return null;
+    }
+
+    return state;
+  } catch (error) {
+    console.error(
+      "Nie udało się odczytać zapisu:",
+      error
+    );
+
+    return null;
+  }
+}
+
+function clearSavedSession() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+
+// --------------------
+// START
+// --------------------
+
 function startQuiz(mode) {
+  clearSavedSession();
+
   selectedMode = mode;
   repeatMode = false;
 
@@ -66,17 +143,41 @@ function startQuiz(mode) {
   answered = false;
   segmentStartScore = 0;
 
-  document
-    .getElementById("start-screen")
-    .classList.add("hidden");
+  hideAllScreens();
 
   document
-    .getElementById("final-screen")
-    .classList.add("hidden");
+    .getElementById("quiz-screen")
+    .classList.remove("hidden");
 
-  document
-    .getElementById("break-screen")
-    .classList.add("hidden");
+  saveSession();
+  showQuestion();
+}
+
+function resumeQuiz() {
+  const state = loadSavedSession();
+
+  if (!state) {
+    showStartScreen();
+    return;
+  }
+
+  quizWords = state.quizWords;
+  currentIndex = state.currentIndex || 0;
+  score = state.score || 0;
+  streak = state.streak || 0;
+  wrongWords = state.wrongWords || [];
+  selectedMode =
+    state.selectedMode || "mixed";
+
+  repeatMode =
+    state.repeatMode || false;
+
+  segmentStartScore =
+    state.segmentStartScore || 0;
+
+  answered = false;
+
+  hideAllScreens();
 
   document
     .getElementById("quiz-screen")
@@ -84,6 +185,16 @@ function startQuiz(mode) {
 
   showQuestion();
 }
+
+function discardSavedSession() {
+  clearSavedSession();
+  showStartScreen();
+}
+
+
+// --------------------
+// PYTANIE
+// --------------------
 
 function showQuestion() {
   if (currentIndex >= quizWords.length) {
@@ -93,8 +204,11 @@ function showQuestion() {
 
   answered = false;
 
-  const word = quizWords[currentIndex];
-  const direction = getDirection();
+  const word =
+    quizWords[currentIndex];
+
+  const direction =
+    getDirection();
 
   const question =
     direction === "en-pl"
@@ -102,14 +216,19 @@ function showQuestion() {
       : word.pl;
 
   currentCorrectAnswers =
-    getCorrectAnswers(word, direction);
+    getCorrectAnswers(
+      word,
+      direction
+    );
 
   document.getElementById(
     "question"
   ).textContent = question;
 
   const answersContainer =
-    document.getElementById("answers");
+    document.getElementById(
+      "answers"
+    );
 
   answersContainer.innerHTML = "";
 
@@ -121,11 +240,15 @@ function showQuestion() {
         : item.en
     )
     .filter(answer =>
-      !currentCorrectAnswers.includes(answer)
+      !currentCorrectAnswers.includes(
+        answer
+      )
     );
 
   const wrongOptions =
-    shuffle([...new Set(answerPool)]).slice(0, 3);
+    shuffle(
+      [...new Set(answerPool)]
+    ).slice(0, 3);
 
   const correctOption =
     currentCorrectAnswers[
@@ -135,27 +258,38 @@ function showQuestion() {
       )
     ];
 
-  const options = shuffle([
-    correctOption,
-    ...wrongOptions
-  ]);
+  const options =
+    shuffle([
+      correctOption,
+      ...wrongOptions
+    ]);
 
   options.forEach(option => {
     const button =
-      document.createElement("button");
-
-    button.className = "answer-btn";
-    button.textContent = option;
-
-    button.addEventListener("click", () => {
-      checkAnswer(
-        button,
-        option,
-        word
+      document.createElement(
+        "button"
       );
-    });
 
-    answersContainer.appendChild(button);
+    button.className =
+      "answer-btn";
+
+    button.textContent =
+      option;
+
+    button.addEventListener(
+      "click",
+      () => {
+        checkAnswer(
+          button,
+          option,
+          word
+        );
+      }
+    );
+
+    answersContainer.appendChild(
+      button
+    );
   });
 
   updateProgress();
@@ -166,12 +300,16 @@ function checkAnswer(
   selectedAnswer,
   word
 ) {
-  if (answered) return;
+  if (answered) {
+    return;
+  }
 
   answered = true;
 
   const buttons =
-    document.querySelectorAll(".answer-btn");
+    document.querySelectorAll(
+      ".answer-btn"
+    );
 
   buttons.forEach(btn => {
     btn.disabled = true;
@@ -181,7 +319,9 @@ function checkAnswer(
         btn.textContent
       )
     ) {
-      btn.classList.add("correct");
+      btn.classList.add(
+        "correct"
+      );
     }
   });
 
@@ -193,7 +333,10 @@ function checkAnswer(
     score++;
     streak++;
   } else {
-    button.classList.add("wrong");
+    button.classList.add(
+      "wrong"
+    );
+
     streak = 0;
 
     const alreadySaved =
@@ -212,20 +355,31 @@ function checkAnswer(
   setTimeout(() => {
     currentIndex++;
 
+    saveSession();
+
     if (
       !repeatMode &&
-      currentIndex < quizWords.length &&
-      currentIndex % SEGMENT_SIZE === 0
+      currentIndex <
+        quizWords.length &&
+      currentIndex %
+        SEGMENT_SIZE === 0
     ) {
       showBreak();
     } else {
       showQuestion();
     }
+
   }, 900);
 }
 
+
+// --------------------
+// PROGRESS
+// --------------------
+
 function updateProgress() {
-  const total = quizWords.length;
+  const total =
+    quizWords.length;
 
   const completed =
     Math.min(
@@ -242,9 +396,12 @@ function updateProgress() {
   document.getElementById(
     "overall-progress"
   ).style.width =
-    `${total
-      ? (completed / total) * 100
-      : 0}%`;
+    `${
+      total
+        ? (completed / total) *
+          100
+        : 0
+    }%`;
 
   document.getElementById(
     "streak"
@@ -265,22 +422,28 @@ function updateProgress() {
     document.getElementById(
       "segment-progress"
     ).style.width =
-      `${total
-        ? (completed / total) * 100
-        : 0}%`;
+      `${
+        total
+          ? (completed / total) *
+            100
+          : 0
+      }%`;
 
     return;
   }
 
   const segmentNumber =
     Math.floor(
-      currentIndex / SEGMENT_SIZE
+      currentIndex /
+      SEGMENT_SIZE
     ) + 1;
 
   const segmentStart =
     Math.floor(
-      currentIndex / SEGMENT_SIZE
-    ) * SEGMENT_SIZE;
+      currentIndex /
+      SEGMENT_SIZE
+    ) *
+    SEGMENT_SIZE;
 
   const segmentLength =
     Math.min(
@@ -291,8 +454,8 @@ function updateProgress() {
   const segmentCompleted =
     Math.min(
       currentIndex -
-        segmentStart +
-        (answered ? 1 : 0),
+      segmentStart +
+      (answered ? 1 : 0),
       segmentLength
     );
 
@@ -309,22 +472,35 @@ function updateProgress() {
   document.getElementById(
     "segment-progress"
   ).style.width =
-    `${segmentLength
-      ? (segmentCompleted / segmentLength) * 100
-      : 0}%`;
+    `${
+      segmentLength
+        ? (
+            segmentCompleted /
+            segmentLength
+          ) * 100
+        : 0
+    }%`;
 }
 
+
+// --------------------
+// PRZERWA
+// --------------------
+
 function showBreak() {
-  document
-    .getElementById("quiz-screen")
-    .classList.add("hidden");
+  hideAllScreens();
 
   document
-    .getElementById("break-screen")
-    .classList.remove("hidden");
+    .getElementById(
+      "break-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
   const segment =
-    currentIndex / SEGMENT_SIZE;
+    currentIndex /
+    SEGMENT_SIZE;
 
   const messages = [
     "Super Ci idzie ❤️ Odpocznij chwilę, napij się czegoś i lecimy dalej.",
@@ -339,16 +515,21 @@ function showBreak() {
     "Odpocznij chwilę ❤️";
 
   const segmentScore =
-    score - segmentStartScore;
+    score -
+    segmentStartScore;
 
   document.getElementById(
     "segment-score"
   ).textContent =
     `Wynik segmentu: ${segmentScore} / 50`;
 
-  segmentStartScore = score;
+  segmentStartScore =
+    score;
 
-  let seconds = BREAK_TIME;
+  saveSession();
+
+  let seconds =
+    BREAK_TIME;
 
   const timerElement =
     document.getElementById(
@@ -358,7 +539,13 @@ function showBreak() {
   timerElement.textContent =
     formatTime(seconds);
 
-  const timer =
+  if (activeBreakTimer) {
+    clearInterval(
+      activeBreakTimer
+    );
+  }
+
+  activeBreakTimer =
     setInterval(() => {
       seconds--;
 
@@ -366,7 +553,13 @@ function showBreak() {
         formatTime(seconds);
 
       if (seconds <= 0) {
-        clearInterval(timer);
+        clearInterval(
+          activeBreakTimer
+        );
+
+        activeBreakTimer =
+          null;
+
         continueQuiz();
       }
     }, 1000);
@@ -374,51 +567,73 @@ function showBreak() {
   document.getElementById(
     "continue-btn"
   ).onclick = () => {
-    clearInterval(timer);
+    if (activeBreakTimer) {
+      clearInterval(
+        activeBreakTimer
+      );
+
+      activeBreakTimer =
+        null;
+    }
+
     continueQuiz();
   };
 }
 
 function continueQuiz() {
-  document
-    .getElementById("break-screen")
-    .classList.add("hidden");
+  hideAllScreens();
 
   document
-    .getElementById("quiz-screen")
-    .classList.remove("hidden");
+    .getElementById(
+      "quiz-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
+  saveSession();
   showQuestion();
 }
 
 function formatTime(seconds) {
   const minutes =
-    Math.floor(seconds / 60);
+    Math.floor(
+      seconds / 60
+    );
 
-  const remainingSeconds =
+  const remaining =
     seconds % 60;
 
   return (
-    String(minutes).padStart(2, "0") +
+    String(minutes).padStart(
+      2,
+      "0"
+    ) +
     ":" +
-    String(
-      remainingSeconds
-    ).padStart(2, "0")
+    String(remaining).padStart(
+      2,
+      "0"
+    )
   );
 }
 
+
+// --------------------
+// KONIEC
+// --------------------
+
 function showFinalScreen() {
-  document
-    .getElementById("quiz-screen")
-    .classList.add("hidden");
+  clearSavedSession();
+
+  hideAllScreens();
 
   document
-    .getElementById("break-screen")
-    .classList.add("hidden");
-
-  document
-    .getElementById("final-screen")
-    .classList.remove("hidden");
+    .getElementById(
+      "final-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
   document.getElementById(
     "final-score"
@@ -427,32 +642,38 @@ function showFinalScreen() {
 
   const percent =
     quizWords.length
-      ? score / quizWords.length
+      ? score /
+        quizWords.length
       : 0;
 
   let message;
 
   if (percent >= 0.9) {
     message =
-      "No i pięknie księżniczko! Kocham Cię 😏❤️";
-  } else if (percent >= 0.75) {
+      "No i pięknie księżniczko! Kocham Cię😏❤️";
+  } else if (
+    percent >= 0.75
+  ) {
     message =
-      "Bardzo dobrze, lecisz jak burza. Kocham Cię ❤️ ";
+      "Bardzo dobrze, idziesz jak burza! Kocham Cię ❤️";
   } else {
     message =
-      "Spokojnie, powtórzymy błędne i będzie super. Kocham Cię ❤️";
+      "Spokojnie, powtórzymy błędne i będzie super. Kocham Cię ❤️ ";
   }
 
   document.getElementById(
     "final-message"
-  ).textContent = message;
+  ).textContent =
+    message;
 
   const wrongSummary =
     document.getElementById(
       "wrong-summary"
     );
 
-  if (wrongWords.length > 0) {
+  if (
+    wrongWords.length > 0
+  ) {
     wrongSummary.classList.remove(
       "hidden"
     );
@@ -468,12 +689,22 @@ function showFinalScreen() {
   }
 }
 
+
+// --------------------
+// POWTÓRKA BŁĘDNYCH
+// --------------------
+
 function repeatWrongWords() {
-  if (wrongWords.length === 0) {
+  if (
+    wrongWords.length === 0
+  ) {
     return;
   }
 
-  quizWords = shuffle([...wrongWords]);
+  quizWords =
+    shuffle([
+      ...wrongWords
+    ]);
 
   wrongWords = [];
   currentIndex = 0;
@@ -481,44 +712,112 @@ function repeatWrongWords() {
   streak = 0;
   answered = false;
   repeatMode = true;
+  segmentStartScore = 0;
+
+  hideAllScreens();
 
   document
-    .getElementById("final-screen")
-    .classList.add("hidden");
+    .getElementById(
+      "quiz-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
-  document
-    .getElementById("quiz-screen")
-    .classList.remove("hidden");
-
+  saveSession();
   showQuestion();
 }
 
-function returnToStart() {
-  repeatMode = false;
 
-  document
-    .getElementById("final-screen")
-    .classList.add("hidden");
+// --------------------
+// EKRANY
+// --------------------
 
-  document
-    .getElementById("quiz-screen")
-    .classList.add("hidden");
-
-  document
-    .getElementById("break-screen")
-    .classList.add("hidden");
-
-  document
-    .getElementById("start-screen")
-    .classList.remove("hidden");
+function hideAllScreens() {
+  [
+    "resume-screen",
+    "start-screen",
+    "quiz-screen",
+    "break-screen",
+    "final-screen"
+  ].forEach(id => {
+    document
+      .getElementById(id)
+      .classList.add(
+        "hidden"
+      );
+  });
 }
+
+function showStartScreen() {
+  hideAllScreens();
+
+  document
+    .getElementById(
+      "start-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
+}
+
+function showResumeScreen(
+  state
+) {
+  hideAllScreens();
+
+  document
+    .getElementById(
+      "resume-screen"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+  const total =
+    state.quizWords.length;
+
+  const completed =
+    Math.min(
+      state.currentIndex,
+      total
+    );
+
+  document.getElementById(
+    "resume-progress"
+  ).textContent =
+    `Postęp: ${completed} / ${total}`;
+}
+
+function returnToStart() {
+  clearSavedSession();
+
+  repeatMode = false;
+  quizWords = [];
+  currentIndex = 0;
+  score = 0;
+  streak = 0;
+  wrongWords = [];
+  answered = false;
+
+  showStartScreen();
+}
+
+
+// --------------------
+// START APLIKACJI
+// --------------------
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
     document
-      .querySelectorAll(".mode-btn")
+      .querySelectorAll(
+        ".mode-btn"
+      )
       .forEach(button => {
+
         button.addEventListener(
           "click",
           () => {
@@ -527,7 +826,9 @@ document.addEventListener(
             );
           }
         );
+
       });
+
 
     document
       .getElementById(
@@ -538,6 +839,7 @@ document.addEventListener(
         repeatWrongWords
       );
 
+
     document
       .getElementById(
         "restart-btn"
@@ -546,5 +848,41 @@ document.addEventListener(
         "click",
         returnToStart
       );
+
+
+    document
+      .getElementById(
+        "resume-btn"
+      )
+      .addEventListener(
+        "click",
+        resumeQuiz
+      );
+
+
+    document
+      .getElementById(
+        "discard-session-btn"
+      )
+      .addEventListener(
+        "click",
+        discardSavedSession
+      );
+
+
+    const saved =
+      loadSavedSession();
+
+    if (
+      saved &&
+      saved.currentIndex <
+        saved.quizWords.length
+    ) {
+      showResumeScreen(saved);
+    } else {
+      clearSavedSession();
+      showStartScreen();
+    }
+
   }
 );
