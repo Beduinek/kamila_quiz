@@ -6,7 +6,7 @@
 
   <title>English Quiz</title>
 
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 
 <body>
@@ -19,23 +19,76 @@
         English Quiz ❤️
       </h1>
 
+
+      <!-- EKRAN WZNOWIENIA -->
+      <div id="resume-screen" class="hidden center">
+
+        <h2>
+          Wrócić do poprzedniego quizu?
+        </h2>
+
+        <p class="resume-text">
+          Masz zapisany niedokończony quiz ❤️
+        </p>
+
+        <p
+          id="resume-progress"
+          class="resume-progress"
+        >
+          Postęp: 0 / 200
+        </p>
+
+        <div class="resume-buttons">
+
+          <button
+            id="resume-btn"
+            class="main-btn"
+          >
+            Kontynuuj ▶
+          </button>
+
+          <button
+            id="discard-session-btn"
+            class="secondary-btn"
+          >
+            Zacznij od nowa
+          </button>
+
+        </div>
+
+      </div>
+
+
       <!-- EKRAN STARTOWY -->
       <div id="start-screen" class="center">
 
-        <h2>Wybierz tryb</h2>
+        <h2>
+          Wybierz tryb
+        </h2>
 
         <div class="mode-buttons">
-          <button class="mode-btn" data-mode="en-pl">
+
+          <button
+            class="mode-btn"
+            data-mode="en-pl"
+          >
             EN → PL
           </button>
 
-          <button class="mode-btn" data-mode="pl-en">
+          <button
+            class="mode-btn"
+            data-mode="pl-en"
+          >
             PL → EN
           </button>
 
-          <button class="mode-btn" data-mode="mixed">
+          <button
+            class="mode-btn"
+            data-mode="mixed"
+          >
             Mieszany 🔀
           </button>
+
         </div>
 
         <p class="small-info">
@@ -51,14 +104,20 @@
         <div class="top-stats">
 
           <div>
-            <span class="stat-label">Postęp</span>
+            <span class="stat-label">
+              Postęp
+            </span>
+
             <strong id="overall-progress-text">
               0 / 200
             </strong>
           </div>
 
           <div>
-            <span class="stat-label">Seria</span>
+            <span class="stat-label">
+              Seria
+            </span>
+
             <strong id="streak">
               🔥 0
             </strong>
@@ -66,13 +125,16 @@
 
         </div>
 
+
         <div class="progress-wrap">
 
           <div class="progress-bar big-progress">
+
             <div
               id="overall-progress"
               class="progress"
             ></div>
+
           </div>
 
         </div>
@@ -81,6 +143,7 @@
         <div class="progress-wrap">
 
           <div class="progress-info">
+
             <span id="segment-text">
               Segment 1
             </span>
@@ -88,13 +151,16 @@
             <span id="segment-progress-text">
               0 / 50
             </span>
+
           </div>
 
           <div class="progress-bar">
+
             <div
               id="segment-progress"
               class="progress segment-progress-color"
             ></div>
+
           </div>
 
         </div>
@@ -171,7 +237,10 @@
           Twój wynik:
         </p>
 
-        <div id="final-score" class="final-score">
+        <div
+          id="final-score"
+          class="final-score"
+        >
           0 / 200
         </div>
 
@@ -182,7 +251,11 @@
           Jestem z Ciebie dumny ❤️
         </p>
 
-        <div id="wrong-summary" class="wrong-summary hidden">
+
+        <div
+          id="wrong-summary"
+          class="wrong-summary hidden"
+        >
 
           <h3>
             Słówka do powtórki
@@ -199,6 +272,7 @@
 
         </div>
 
+
         <button
           id="restart-btn"
           class="secondary-btn"
@@ -212,8 +286,9 @@
 
   </div>
 
+
   <script src="words.js?v=5"></script>
-<script src="app.js?v=999"></script>
+  <script src="app.js?v=11"></script>
 
 </body>
 </html>
