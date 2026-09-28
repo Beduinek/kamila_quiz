@@ -53,14 +53,7 @@ const words = [
   { en: "teenager", pl: "nastolatek, nastolatka" },
   { en: "young", pl: "młody" },
   { en: "youth", pl: "młodość" },
-  { en: "ageing", pl: "starzejący się" },
-  { en: "be in your prime", pl: "być w kwiecie wieku" },
-  { en: "be on your deathbed", pl: "być na łożu śmierci" },
-  { en: "minor", pl: "osoba nieletnia" },
-  { en: "pass away", pl: "umrzeć" },
-  { en: "pensioner", pl: "emeryt, emerytka" },
-  { en: "toddler", pl: "kilkulatek" },
-  { en: "turn eighteen", pl: "skończyć osiemnaście lat" },
+ 
 
   // APPEARANCE
   { en: "attractive", pl: "atrakcyjny" },
@@ -161,9 +154,7 @@ const words = [
   { en: "uniform", pl: "mundur" },
   { en: "school uniform", pl: "mundurek szkolny" },
   { en: "zip", pl: "zamek błyskawiczny" },
-  { en: "hoodie", pl: "bluza z kapturem" },
-  { en: "joggers", pl: "wygodne spodnie, np. dresowe" },
-  { en: "loungewear", pl: "odzież domowa" },
+  
 
   // SHOES AND ACCESSORIES
   { en: "baseball cap", pl: "czapka z daszkiem" },
