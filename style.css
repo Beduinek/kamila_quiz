@@ -489,3 +489,34 @@ h3 {
   color: #6f5360;
   margin-bottom: 8px;
 }
+.finish-quiz-btn {
+  display: block;
+  margin: 24px auto 0;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #b05a7a;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.finish-quiz-btn:hover {
+  color: #cf4f7f;
+  text-decoration: underline;
+}
+
+.finish-confirm-text {
+  font-size: 20px;
+  color: #6f5360;
+  line-height: 1.5;
+  margin: 20px 0 28px;
+}
+
+.finish-confirm-buttons {
+  display: grid;
+  gap: 14px;
+  max-width: 420px;
+  margin: 0 auto;
+}
