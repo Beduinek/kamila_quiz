@@ -33,6 +33,10 @@ h2 {
   font-size: 28px;
 }
 
+h3 {
+  font-size: 22px;
+}
+
 h1,
 h2,
 h3 {
@@ -48,9 +52,10 @@ h3 {
 }
 
 
-/* START */
+/* START + WZNOWIENIE */
 
-.mode-buttons {
+.mode-buttons,
+.resume-buttons {
   display: grid;
   gap: 18px;
   margin-top: 30px;
@@ -78,6 +83,19 @@ h3 {
   margin-top: 24px;
   color: #9a7a87;
   font-size: 17px;
+}
+
+.resume-text {
+  font-size: 20px;
+  color: #6f5360;
+  margin-top: 20px;
+}
+
+.resume-progress {
+  font-size: 22px;
+  font-weight: 600;
+  color: #c84678;
+  margin-top: 18px;
 }
 
 
@@ -196,9 +214,6 @@ h3 {
   cursor: default;
 }
 
-
-/* ANSWER COLORS */
-
 .correct {
   background: #dff6e6 !important;
   border-color: #45a86b !important;
@@ -269,6 +284,12 @@ h3 {
   color: #a13962;
   font-size: 18px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.secondary-btn:hover {
+  border-color: #d95d8a;
+  background: #fdeaf1;
 }
 
 
@@ -294,8 +315,70 @@ h3 {
   border-top: 1px solid #f1d5df;
 }
 
+#wrong-count {
+  font-size: 18px;
+  color: #7c5967;
+  margin-bottom: 16px;
+}
 
-/* IPAD PORTRAIT / SMALL TABLETS */
+
+/* LISTA BŁĘDNYCH */
+
+.wrong-list {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 18px 0 24px;
+  padding: 10px;
+  border: 1px solid #f0c8d7;
+  border-radius: 18px;
+  background: #fff8fb;
+  text-align: left;
+}
+
+.wrong-item {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f4dce5;
+  font-size: 18px;
+}
+
+.wrong-item:last-child {
+  border-bottom: none;
+}
+
+.wrong-en {
+  font-weight: 700;
+  color: #b33f6c;
+}
+
+.wrong-separator {
+  color: #c99aaa;
+  font-weight: 600;
+}
+
+.wrong-pl {
+  color: #5f4650;
+}
+
+.wrong-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.wrong-list::-webkit-scrollbar-track {
+  background: #f8e8ee;
+  border-radius: 999px;
+}
+
+.wrong-list::-webkit-scrollbar-thumb {
+  background: #e89ab7;
+  border-radius: 999px;
+}
+
+
+/* IPAD */
 
 @media (max-width: 820px) {
   .container {
@@ -324,10 +407,19 @@ h3 {
   .break-timer {
     font-size: 56px;
   }
+
+  .wrong-list {
+    max-height: 360px;
+  }
+
+  .wrong-item {
+    font-size: 18px;
+    padding: 14px;
+  }
 }
 
 
-/* PHONE */
+/* TELEFON */
 
 @media (max-width: 520px) {
   .container {
@@ -381,5 +473,15 @@ h3 {
 
   .final-message {
     font-size: 19px;
+  }
+
+  .wrong-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    font-size: 16px;
+  }
+
+  .wrong-separator {
+    display: none;
   }
 }
