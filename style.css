@@ -484,4 +484,8 @@ h3 {
   .wrong-separator {
     display: none;
   }
+.wrong-hint {
+  font-size: 18px;
+  color: #6f5360;
+  margin-bottom: 8px;
 }
