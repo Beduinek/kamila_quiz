@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f6;
+  color: #222;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.progress-wrap {
+  margin-bottom: 20px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: #e5e5e5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background: #6c63ff;
+  transition: width 0.3s ease;
+}
+
+.question {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 30px 0;
+  text-align: center;
+}
+
+.answers {
+  display: grid;
+  gap: 12px;
+}
+
+.answer-btn {
+  padding: 16px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 14px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.answer-btn:hover {
+  border-color: #6c63ff;
+}
+
+.correct {
+  background: #d9f7df;
+  border-color: #2ecc71;
+}
+
+.wrong {
+  background: #ffdede;
+  border-color: #e74c3c;
+}
+
+.hidden {
+  display: none;
+}
+
+.center {
+  text-align: center;
+}
+
+.break-timer {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.main-btn {
+  padding: 14px 22px;
+  border: none;
+  border-radius: 14px;
+  background: #6c63ff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
