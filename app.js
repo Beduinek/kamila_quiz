@@ -1,5 +1,5 @@
 const SEGMENT_SIZE = 50;
-const BREAK_TIME = 60;
+const BREAK_TIME = 120;
 
 let quizWords = [];
 let currentIndex = 0;
@@ -344,9 +344,11 @@ function showBreak() {
     currentIndex / SEGMENT_SIZE;
 
   const messages = [
-    "Super Ci idzie ❤️ Ciśnij dalej!",
-    "Połowa za Tobą 😎 Wiedziałem, że dasz radę.",
-    "Ostatnia prosta ❤️ Jeszcze tylko 50!"
+    const messages = [
+  "Super Ci idzie ❤️ Odpocznij chwilę, napij się czegoś i lecimy dalej.",
+  "Połowa za Tobą 😎 Zrób sobie 2 minuty przerwy, serio zasłużyłaś.",
+  "Ostatnia prosta ❤️ Odpocznij chwilę. Jeszcze tylko 50 i masz to."
+];
   ];
 
   document.getElementById(
