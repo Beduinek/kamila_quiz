@@ -7,6 +7,7 @@ let score = 0;
 let streak = 0;
 let wrongWords = [];
 let answered = false;
+let currentCorrectAnswers = [];
 
 function shuffle(array) {
   const copy = [...array];
@@ -19,12 +20,36 @@ function shuffle(array) {
   return copy;
 }
 
+function normalize(text) {
+  return text.trim().toLowerCase();
+}
+
+function getAllCorrectAnswers(word, direction) {
+  if (direction === "en-pl") {
+    return [word.pl];
+  }
+
+  const targetPolish = normalize(word.pl);
+
+  return words
+    .filter(item => normalize(item.pl) === targetPolish)
+    .map(item => item.en);
+}
+
 function startQuiz() {
   quizWords = shuffle(words);
   currentIndex = 0;
   score = 0;
   streak = 0;
   wrongWords = [];
+
+  document
+    .getElementById("final-screen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("quiz-screen")
+    .classList.remove("hidden");
 
   showQuestion();
 }
@@ -43,10 +68,11 @@ function showQuestion() {
   const question =
     direction === "en-pl" ? word.en : word.pl;
 
-  const correctAnswer =
-    direction === "en-pl" ? word.pl : word.en;
+  currentCorrectAnswers =
+    getAllCorrectAnswers(word, direction);
 
-  document.getElementById("question").textContent = question;
+  document.getElementById("question").textContent =
+    question;
 
   const answerContainer =
     document.getElementById("answers");
@@ -57,14 +83,24 @@ function showQuestion() {
     .filter(item => item !== word)
     .map(item =>
       direction === "en-pl" ? item.pl : item.en
+    )
+    .filter(answer =>
+      !currentCorrectAnswers.includes(answer)
     );
 
   const wrongAnswers = shuffle(
     [...new Set(availableAnswers)]
   ).slice(0, 3);
 
+  const displayedCorrectAnswer =
+    currentCorrectAnswers[
+      Math.floor(
+        Math.random() * currentCorrectAnswers.length
+      )
+    ];
+
   const answers = shuffle([
-    correctAnswer,
+    displayedCorrectAnswer,
     ...wrongAnswers
   ]);
 
@@ -75,12 +111,7 @@ function showQuestion() {
     button.textContent = answer;
 
     button.addEventListener("click", () => {
-      checkAnswer(
-        button,
-        answer,
-        correctAnswer,
-        word
-      );
+      checkAnswer(button, answer, word);
     });
 
     answerContainer.appendChild(button);
@@ -91,12 +122,7 @@ function showQuestion() {
   updateProgress();
 }
 
-function checkAnswer(
-  button,
-  selectedAnswer,
-  correctAnswer,
-  word
-) {
+function checkAnswer(button, selectedAnswer, word) {
   if (answered) return;
 
   answered = true;
@@ -107,18 +133,25 @@ function checkAnswer(
   buttons.forEach(btn => {
     btn.disabled = true;
 
-    if (btn.textContent === correctAnswer) {
+    if (
+      currentCorrectAnswers.includes(
+        btn.textContent
+      )
+    ) {
       btn.classList.add("correct");
     }
   });
 
-  if (selectedAnswer === correctAnswer) {
+  if (
+    currentCorrectAnswers.includes(
+      selectedAnswer
+    )
+  ) {
     score++;
     streak++;
   } else {
     button.classList.add("wrong");
     streak = 0;
-
     wrongWords.push(word);
   }
 
@@ -143,15 +176,21 @@ function nextQuestion() {
 function updateProgress() {
   const total = quizWords.length;
 
+  const completed =
+    Math.min(
+      currentIndex + (answered ? 1 : 0),
+      total
+    );
+
   document.getElementById(
     "overall-progress-text"
   ).textContent =
-    `${Math.min(currentIndex + (answered ? 1 : 0), total)} / ${total}`;
+    `${completed} / ${total}`;
 
   const overallPercent =
     total === 0
       ? 0
-      : (currentIndex / total) * 100;
+      : (completed / total) * 100;
 
   document.getElementById(
     "overall-progress"
@@ -161,8 +200,22 @@ function updateProgress() {
   const segmentNumber =
     Math.floor(currentIndex / SEGMENT_SIZE) + 1;
 
-  const segmentPosition =
-    currentIndex % SEGMENT_SIZE;
+  const segmentStart =
+    Math.floor(currentIndex / SEGMENT_SIZE) *
+    SEGMENT_SIZE;
+
+  const segmentLength =
+    Math.min(
+      SEGMENT_SIZE,
+      total - segmentStart
+    );
+
+  const segmentCompleted =
+    Math.min(
+      (currentIndex - segmentStart) +
+        (answered ? 1 : 0),
+      segmentLength
+    );
 
   document.getElementById(
     "segment-text"
@@ -172,17 +225,18 @@ function updateProgress() {
   document.getElementById(
     "segment-progress-text"
   ).textContent =
-    `${segmentPosition} / ${Math.min(
-      SEGMENT_SIZE,
-      total -
-        Math.floor(currentIndex / SEGMENT_SIZE) *
-          SEGMENT_SIZE
-    )}`;
+    `${segmentCompleted} / ${segmentLength}`;
+
+  const segmentPercent =
+    segmentLength === 0
+      ? 0
+      : (segmentCompleted / segmentLength) *
+        100;
 
   document.getElementById(
     "segment-progress"
   ).style.width =
-    `${(segmentPosition / SEGMENT_SIZE) * 100}%`;
+    `${segmentPercent}%`;
 
   document.getElementById(
     "streak"
@@ -296,10 +350,10 @@ function showFinalScreen() {
 
   if (percent >= 0.9) {
     message =
-      "No i kto mówił, że nie umie angielskiego? 😏❤️";
+      "No i kto mówił, że nie umie angielskiego? Jestem dumny, kocham Cię 😏❤️";
   } else if (percent >= 0.75) {
     message =
-      "Bardzo dobrze ❤️ Jeszcze trochę i będzie petarda.";
+      "Bardzo dobrze ❤️ Idziesz jak burza, kocham Cię ❤️.";
   } else {
     message =
       "Spokojnie, po to jest ten quiz ❤️ Powtórzymy błędne i będzie git.";
