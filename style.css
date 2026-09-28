@@ -358,17 +358,18 @@ h3 {
 }
 
 .wrong-hint {
-  font-size: 18px;
-  color: #6f5360;
-  margin-bottom: 8px;
-}
-
-#wrong-count {
   font-size: 22px;
   font-weight: 700;
   color: #c84c7a;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   text-align: center;
+}
+
+#wrong-count {
+  font-size: 18px;
+  font-weight: 500;
+  color: #7c5967;
+  margin-bottom: 16px;
 }
 
 
