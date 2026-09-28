@@ -227,6 +227,31 @@ h3 {
 }
 
 
+/* ZAKOŃCZ QUIZ */
+
+.finish-quiz-btn {
+  display: block;
+  margin: 34px auto 0;
+  padding: 14px 26px;
+  min-width: 180px;
+  border: 2px solid #efb4ca;
+  border-radius: 16px;
+  background: #fff8fb;
+  color: #b33f6c;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.finish-quiz-btn:hover {
+  background: #fdeaf1;
+  border-color: #d95d8a;
+  color: #cf4f7f;
+  box-shadow: 0 4px 12px rgba(217, 79, 130, 0.12);
+}
+
+
 /* BREAK */
 
 .break-message {
@@ -251,7 +276,7 @@ h3 {
 }
 
 
-/* BUTTONS */
+/* GŁÓWNE PRZYCISKI */
 
 .main-btn {
   min-height: 62px;
@@ -293,6 +318,23 @@ h3 {
 }
 
 
+/* POTWIERDZENIE ZAKOŃCZENIA */
+
+.finish-confirm-text {
+  font-size: 20px;
+  color: #6f5360;
+  line-height: 1.5;
+  margin: 20px 0 28px;
+}
+
+.finish-confirm-buttons {
+  display: grid;
+  gap: 14px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+
 /* FINAL */
 
 .final-score {
@@ -315,6 +357,12 @@ h3 {
   border-top: 1px solid #f1d5df;
 }
 
+.wrong-hint {
+  font-size: 18px;
+  color: #6f5360;
+  margin-bottom: 8px;
+}
+
 #wrong-count {
   font-size: 18px;
   color: #7c5967;
@@ -333,6 +381,7 @@ h3 {
   border-radius: 18px;
   background: #fff8fb;
   text-align: left;
+  -webkit-overflow-scrolling: touch;
 }
 
 .wrong-item {
@@ -404,6 +453,12 @@ h3 {
     min-height: 68px;
   }
 
+  .finish-quiz-btn {
+    margin-top: 32px;
+    min-width: 190px;
+    font-size: 18px;
+  }
+
   .break-timer {
     font-size: 56px;
   }
@@ -455,6 +510,13 @@ h3 {
     font-size: 18px;
   }
 
+  .finish-quiz-btn {
+    margin-top: 28px;
+    min-width: 170px;
+    padding: 13px 22px;
+    font-size: 17px;
+  }
+
   .break-message {
     font-size: 19px;
   }
@@ -475,48 +537,18 @@ h3 {
     font-size: 19px;
   }
 
+  .wrong-list {
+    max-height: 280px;
+  }
+
   .wrong-item {
     grid-template-columns: 1fr;
     gap: 4px;
     font-size: 16px;
+    padding: 12px 10px;
   }
 
   .wrong-separator {
     display: none;
   }
-.wrong-hint {
-  font-size: 18px;
-  color: #6f5360;
-  margin-bottom: 8px;
-}
-.finish-quiz-btn {
-  display: block;
-  margin: 24px auto 0;
-  padding: 12px 20px;
-  border: none;
-  background: transparent;
-  color: #b05a7a;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.finish-quiz-btn:hover {
-  color: #cf4f7f;
-  text-decoration: underline;
-}
-
-.finish-confirm-text {
-  font-size: 20px;
-  color: #6f5360;
-  line-height: 1.5;
-  margin: 20px 0 28px;
-}
-
-.finish-confirm-buttons {
-  display: grid;
-  gap: 14px;
-  max-width: 420px;
-  margin: 0 auto;
 }
