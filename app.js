@@ -1,3 +1,4 @@
+alert("NOWY APP DZIALA");
 const SEGMENT_SIZE = 50;
 const BREAK_TIME = 120;
 
